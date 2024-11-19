@@ -1,8 +1,7 @@
 #
-#   A simple hello world application
+#   A simple hello world application (AT&T)
 #
 
-#.intel_syntax noprefix
 .global _start
 
 .set SYS_write, 1
@@ -14,32 +13,32 @@
 
 .section .text
 _start:
-    push stdout
+    push $stdout
     lea msg, %rax
     push %rax
     push msg_len
     call write
 
-    push 0
+    push $0
     call exit
 
 write:
-    mov %rax, SYS_write  # Syscall id write
-    mov %rdi, 24(%rsp) # File descriptor
-    mov %rsi, 16(%rsp) # Buffer
-    mov %rdx, 8(%rsp)  # Buffer length 
+    mov $SYS_write, %rax        # Syscall id write
+    mov 24(%rsp), %rdi          # File descriptor
+    mov 16(%rsp), %rsi          # Buffer
+    mov 8(%rsp), %rdx           # Buffer length 
     syscall
-    ret $24              # Return and clean up the stack
+    ret $24                     # Return and clean up the stack
 
 exit:
-    mov %rax, SYS_exit   # Syscall id exit
-    mov %rdi, 8(%rsp)  # Exit code
+    mov $SYS_exit, %rax         # Syscall id exit
+    mov 8(%rsp), %rdi           # Exit code
     syscall
-    ret $8               # Return and clean up the stack
+    ret $8                      # Return and clean up the stack
 
 
-.data
+.section .data
 msg: 
     .asciz "Hello World!\n"
 msg_len:
-    .int . - msg
+    .int . - msg 
